@@ -16,12 +16,12 @@ import (
 
 func main() {
 	cfg := config.Load()
-	db := database.Connect(cfg)
+	db := database.Connect(&cfg.DB)
 
 	app := setupApp()
-	setupRoutes(app, db)
+	setupRoutes(app, db, cfg)
 
-	log.Fatal(app.Listen(":" + cfg.AppPort))
+	log.Fatal(app.Listen(":" + cfg.App.Port))
 }
 
 func setupApp() *fiber.App {
@@ -31,7 +31,7 @@ func setupApp() *fiber.App {
 	return app
 }
 
-func setupRoutes(app *fiber.App, db *gorm.DB) {
+func setupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
@@ -39,5 +39,5 @@ func setupRoutes(app *fiber.App, db *gorm.DB) {
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
-	userHandler.RegisterRoutes(app)
+	userHandler.RegisterRoutes(app, cfg.App.APIKey)
 }

@@ -7,27 +7,39 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type DBConfig struct {
+	Host     string
+	User     string
+	Password string
+	Name     string
+	Port     string
+}
+
+type AppConfig struct {
+	Port   string
+	APIKey string
+}
+
 type Config struct {
-	DBHost     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBPort     string
-	AppPort    string
+	DB  DBConfig
+	App AppConfig
 }
 
 func Load() *Config {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("no .env file found")
 	}
-	log.Println("DB_NAME:", os.Getenv("DB_NAME"))
-
 	return &Config{
-		DBHost:     os.Getenv("DB_HOST"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBPort:     os.Getenv("DB_PORT"),
-		AppPort:    os.Getenv("APP_PORT"),
+		DB: DBConfig{
+			Host:     os.Getenv("DB_HOST"),
+			User:     os.Getenv("DB_USER"),
+			Password: os.Getenv("DB_PASSWORD"),
+			Name:     os.Getenv("DB_NAME"),
+			Port:     os.Getenv("DB_PORT"),
+		},
+		App: AppConfig{
+			Port:   os.Getenv("APP_PORT"),
+			APIKey: os.Getenv("API_KEY"),
+		},
 	}
 }

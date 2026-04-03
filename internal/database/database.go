@@ -10,12 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func Connect(cfg *config.Config) *gorm.DB {
+func Connect(cfg *config.DBConfig) *gorm.DB {
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName,
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name,
 	)
-	log.Println("DSN:", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
