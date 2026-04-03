@@ -1,0 +1,16 @@
+# binary
+pulseops
+tmp/
+
+# env
+.env
+
+# ide
+.idea/
+.vscode/
+
+# os
+.DS_Store
+
+# air
+build-errors.log
