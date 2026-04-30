@@ -20,7 +20,12 @@ func Connect(cfg *config.DBConfig) *gorm.DB {
 	if err != nil {
 		log.Fatal("db connect failed:", err)
 	}
-	db.AutoMigrate(&model.User{})
+
+	db.AutoMigrate(
+		&model.User{},
+		&model.Incident{},
+	)
+
 	log.Println("db connected")
 	return db
 }

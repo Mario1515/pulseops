@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"pulseops/internal/config"
 	"pulseops/internal/database"
 	"pulseops/internal/handler"
@@ -32,12 +33,33 @@ func setupApp() *fiber.App {
 }
 
 func setupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
+	setupHealthRoute(app)
+	setupUserRoutes(app, db, cfg)
+	setupIncidentRoutes(app, db, cfg)
+}
+
+// ─── Health ───────────────────────────────────────────────────────────────────
+
+func setupHealthRoute(app *fiber.App) {
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
+}
 
-	userRepo := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepo)
-	userHandler := handler.NewUserHandler(userService)
-	userHandler.RegisterRoutes(app, cfg.App.APIKey)
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+func setupUserRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
+	repo := repository.NewUserRepository(db)
+	svc := service.NewUserService(repo)
+	h := handler.NewUserHandler(svc)
+	h.RegisterRoutes(app, cfg.App.APIKey)
+}
+
+// ─── Incidents ────────────────────────────────────────────────────────────────
+
+func setupIncidentRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
+	repo := repository.NewIncidentRepository(db)
+	svc := service.NewIncidentService(repo)
+	h := handler.NewIncidentHandler(svc)
+	h.RegisterRoutes(app, cfg.App.APIKey)
 }
