@@ -6,11 +6,11 @@ import (
 	"pulseops/internal/config"
 	"pulseops/internal/database"
 	"pulseops/internal/handler"
+	"pulseops/internal/middleware"
 	"pulseops/internal/repository"
 	"pulseops/internal/service"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"gorm.io/gorm"
 )
@@ -19,16 +19,21 @@ func main() {
 	cfg := config.Load()
 	db := database.Connect(&cfg.DB)
 
-	app := setupApp()
+	app := setupApp(cfg)
 	setupRoutes(app, db, cfg)
 
 	log.Fatal(app.Listen(":" + cfg.App.Port))
 }
 
-func setupApp() *fiber.App {
+func setupApp(cfg *config.Config) *fiber.App {
 	app := fiber.New()
-	app.Use(logger.New())
+
 	app.Use(recover.New())
+
+	if cfg.App.Env == "local" {
+		app.Use(middleware.RequestLogger())
+	}
+
 	return app
 }
 

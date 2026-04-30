@@ -18,6 +18,7 @@ type DBConfig struct {
 type AppConfig struct {
 	Port   string
 	APIKey string
+	Env    string
 }
 
 type Config struct {
@@ -40,6 +41,7 @@ func Load() *Config {
 		App: AppConfig{
 			Port:   os.Getenv("APP_PORT"),
 			APIKey: os.Getenv("API_KEY"),
+			Env:    os.Getenv("APP_ENV"),
 		},
 	}
 }
