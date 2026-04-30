@@ -39,7 +39,6 @@ func setupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 }
 
 // ─── Health ───────────────────────────────────────────────────────────────────
-
 func setupHealthRoute(app *fiber.App) {
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
@@ -47,7 +46,6 @@ func setupHealthRoute(app *fiber.App) {
 }
 
 // ─── Users ────────────────────────────────────────────────────────────────────
-
 func setupUserRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	repo := repository.NewUserRepository(db)
 	svc := service.NewUserService(repo)
@@ -56,7 +54,6 @@ func setupUserRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 }
 
 // ─── Incidents ────────────────────────────────────────────────────────────────
-
 func setupIncidentRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 	repo := repository.NewIncidentRepository(db)
 	svc := service.NewIncidentService(repo)
