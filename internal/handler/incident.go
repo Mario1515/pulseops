@@ -5,6 +5,7 @@ import (
 	"pulseops/internal/model"
 	"pulseops/internal/service"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,9 +22,9 @@ func (h *IncidentHandler) RegisterRoutes(app *fiber.App, apiKey string) {
 	v1 := app.Group("/api/v1")
 	incidents := v1.Group("/incidents", middleware.APIKey(apiKey))
 
-	incidents.Get("", h.list)
-	incidents.Post("", h.create)
-	incidents.Delete("/:id", h.delete)
+	incidents.Get("", middleware.RateLimiter(10, 1*time.Minute), h.list)
+	incidents.Post("", middleware.RateLimiter(10, 1*time.Minute), h.create)
+	incidents.Delete("/:id", middleware.RateLimiter(20, 1*time.Minute), h.delete)
 }
 
 func (h *IncidentHandler) list(c *fiber.Ctx) error {

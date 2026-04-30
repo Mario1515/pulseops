@@ -27,7 +27,6 @@ func main() {
 
 func setupApp(cfg *config.Config) *fiber.App {
 	app := fiber.New()
-
 	app.Use(recover.New())
 
 	if cfg.App.Env == "local" {
