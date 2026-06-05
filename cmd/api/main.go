@@ -10,8 +10,8 @@ import (
 	"pulseops/internal/repository"
 	"pulseops/internal/service"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 	"gorm.io/gorm"
 )
 
@@ -44,7 +44,7 @@ func setupRoutes(app *fiber.App, db *gorm.DB, cfg *config.Config) {
 
 // ─── Health ───────────────────────────────────────────────────────────────────
 func setupHealthRoute(app *fiber.App) {
-	app.Get("/health", func(c *fiber.Ctx) error {
+	app.Get("/health", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
 }

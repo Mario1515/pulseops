@@ -3,8 +3,8 @@ package middleware
 import (
 	"os"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
 func RequestLogger() fiber.Handler {
@@ -15,6 +15,6 @@ func RequestLogger() fiber.Handler {
 
 	return logger.New(logger.Config{
 		Format: "${time} | ${status} | ${latency} | ${method} | ${path} | ${error}\n",
-		Output: file,
+		Stream: file,
 	})
 }

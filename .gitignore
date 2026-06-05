@@ -1,18 +1,20 @@
-# binary
+# Binary
 pulseops
 tmp/
 logs/
 
-# env
+# Environment
 .env
 
-# ide
+# IDE
 .idea/
 .vscode/
 
-# os
+# OS
 .DS_Store
 
-# air
+# Build
 build-errors.log
 
+# Vendor
+vendor/

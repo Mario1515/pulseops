@@ -6,7 +6,7 @@ import (
 	"pulseops/internal/service"
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type UserHandler struct {
@@ -26,7 +26,7 @@ func (h *UserHandler) RegisterRoutes(app *fiber.App, apiKey string) {
 	users.Delete("/:id", h.delete)
 }
 
-func (h *UserHandler) list(c *fiber.Ctx) error {
+func (h *UserHandler) list(c fiber.Ctx) error {
 	users, err := h.svc.GetAll()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
@@ -34,9 +34,9 @@ func (h *UserHandler) list(c *fiber.Ctx) error {
 	return c.JSON(users)
 }
 
-func (h *UserHandler) create(c *fiber.Ctx) error {
+func (h *UserHandler) create(c fiber.Ctx) error {
 	var u model.User
-	if err := c.BodyParser(&u); err != nil {
+	if err := c.Bind().Body(&u); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 	if errors := validateStruct(u); len(errors) > 0 {
@@ -48,7 +48,7 @@ func (h *UserHandler) create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(u)
 }
 
-func (h *UserHandler) delete(c *fiber.Ctx) error {
+func (h *UserHandler) delete(c fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})

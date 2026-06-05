@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type IncidentHandler struct {
@@ -27,7 +27,7 @@ func (h *IncidentHandler) RegisterRoutes(app *fiber.App, apiKey string) {
 	incidents.Delete("/:id", middleware.RateLimiter(20, 1*time.Minute), h.delete)
 }
 
-func (h *IncidentHandler) list(c *fiber.Ctx) error {
+func (h *IncidentHandler) list(c fiber.Ctx) error {
 	incidents, err := h.svc.GetAll()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
@@ -35,9 +35,9 @@ func (h *IncidentHandler) list(c *fiber.Ctx) error {
 	return c.JSON(incidents)
 }
 
-func (h *IncidentHandler) create(c *fiber.Ctx) error {
+func (h *IncidentHandler) create(c fiber.Ctx) error {
 	var incident model.Incident
-	if err := c.BodyParser(&incident); err != nil {
+	if err := c.Bind().Body(&incident); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 	if errors := validateStruct(incident); len(errors) > 0 {
@@ -49,7 +49,7 @@ func (h *IncidentHandler) create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(incident)
 }
 
-func (h *IncidentHandler) delete(c *fiber.Ctx) error {
+func (h *IncidentHandler) delete(c fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
